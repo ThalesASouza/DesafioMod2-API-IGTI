@@ -1,6 +1,7 @@
 import express from 'express';
 import { promises } from 'fs';
 
+
 global.fileName = 'grades.json';
 
 const rotas = express.Router();
@@ -24,9 +25,10 @@ rotas.post('/inserirGrade', async (req, res) => {
 
     await writeFile(global.fileName, JSON.stringify(json));
     res.send(newGrade);
-
+    logger.info(`POST /inserirGrade -  ${JSON.stringify(newGrade)}`);
   } catch (err) {
     res.status(400).send({ Error: err.message });
+    logger.error(err);
   }
 });
 
@@ -47,9 +49,10 @@ rotas.put('/atualizarGrade', async (req, res) => {
 
     await writeFile(global.fileName, JSON.stringify(json));
     res.send(newGrade);
-
+    logger.info(`PUT /atualizarGrade -  ${JSON.stringify(newGrade)}`);
   } catch (err) {
     res.status(400).send({ Error: err.message });
+    logger.error(err);
   }
 
 });
@@ -65,9 +68,10 @@ rotas.delete('/deletarGrade/:id', async (req, res) => {
    
     await writeFile(global.fileName, JSON.stringify(json));
     res.end();
-   
+    logger.info(`DELETE /deletarGrade/:id -  ${JSON.stringify(req.params.id)}`);
   } catch (err) {
     res.status(400).send({ Error: err.message });
+    logger.error(err);
   }
 });
 
@@ -81,12 +85,14 @@ rotas.get('/consultarGrade/:id', async (req, res) => {
     
     if (resultGrades.length !== 0) {
       res.send(resultGrades);
+      logger.info(`GET /consultarGrade/:id -  ${JSON.stringify(resultGrades)}`);
     } else {
       throw new Error('Id não encontrado');
     }
    
   } catch (err) {
     res.status(400).send({ Error: err.message });
+    logger.error(err);
   }
 });
 
@@ -113,12 +119,15 @@ rotas.get('/consultarNotaTotal/:student/:subject', async (req, res) => {
       res.send(`Student: ${student}<br>
                 Disciplina: ${subject}<br>
                 Nota total: ${notaTotal}`);
+
+      logger.info(`GET /consultarNotaTotal/:student/:subject -  ${JSON.stringify(notaTotal)}`);
     } else {
       throw new Error('Student ou Subject não encontrados');
     }
 
   } catch (err) {
     res.status(400).send(`Error: ${err.message}`);
+    logger.error(err);
   }
 });
 
@@ -151,12 +160,15 @@ rotas.get('/consultarMediaGlobal/:subject/:type', async (req, res) => {
                 Total: ${notaTotal}<br>
                 Quantidade: ${qtd}<br>
                 Média: ${media}`);
+      logger.info(`GET /consultarMediaGlobal/:subject/:type -  ${JSON.stringify(media)}`);
+    
     } else {
       throw new Error('Subject ou Type não encontrados');
     }
 
   } catch (err) {
     res.status(400).send(`Error: ${err.message}`);
+    logger.error(err);
   }
 });
 
@@ -179,12 +191,15 @@ rotas.get('/consultar3MaioresValue/:subject/:type', async (req, res) => {
 
     if (resultGradeSubject.length !== 0) {
       res.send(resultGradeSubject);
+      logger.info(`GET /consultar3MaioresValue/:subject/:type -  ${JSON.stringify(resultGradeSubject)}`);
+   
     } else {
       throw new Error('Subject ou Type não encontrados');
     }
 
   } catch (err) {
     res.status(400).send(`Error: ${err.message}`);
+    logger.error(err);
   }
 });
 export default rotas;
